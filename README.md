@@ -1,5 +1,22 @@
 # 辅助决策型Agent
 
+# 安装
+前端
+```
+cd frontend
+npm install
+npm run dev
+```
+
+后端，任选1个Agent
+```
+cd backend
+pip install -e .
+cd doctor
+python main_data_prepare.py
+python main_api.py
+```
+
 ## 数据
 
 **决策型 Agent 场景的模拟数据（结构与疾病场景一致）**，每条数据包括 `name`（名称）、`matches`（匹配条件/特征描述）、`treatment_plan`（应对策略或处理方案）：
