@@ -9,22 +9,25 @@ import os
 from litellm import completion
 from google.adk.tools import ToolContext
 from google.adk.tools.agent_tool import AgentTool
-from data import example_data
+from data import doctor_data
 import time
 from datetime import datetime
 import random
+from dotenv import load_dotenv
 from DecisionAgent.embedding_utils import EmbeddingModel,ChromaDB
 # import litellm
 # litellm._turn_on_debug()
+# 加载环境变量
+load_dotenv()
 
 TOOL_MODEL_API_BASE = os.environ["TOOL_MODEL_API_BASE"]
 TOOL_MODEL_API_KEY = os.environ["TOOL_MODEL_API_KEY"]
 TOOL_MODEL_NAME = os.environ["TOOL_MODEL_NAME"]
 TOOL_MODEL_PROVIDER = os.environ["TOOL_MODEL_PROVIDER"]
-
+COLLECTION_NAME = os.environ.get("COLLECTION_NAME", "disease_data")
+print(f"使用的向量表是: {COLLECTION_NAME}")
 embedder = EmbeddingModel()
 chromadb_instance = ChromaDB(embedder=embedder)
-collection_name = "disease_matches"
 
 def query_deepseek(prompt):
     try:
@@ -58,7 +61,7 @@ async def matchDiseaseBySymptoms(
     history_symptoms_text = ",".join(history_symptoms)
     print(f"\n查询文本: '{history_symptoms_text}'")
     query_results = chromadb_instance.query2collection(
-        collection=collection_name,
+        collection=COLLECTION_NAME,
         query_documents=[history_symptoms_text],
         topk=2
     )
@@ -71,7 +74,7 @@ async def matchDiseaseBySymptoms(
         print(f"  文档: {doc[:50]}... (截断)")
         print(f"  名称: {meta.get('name')}")
         print(f"  距离: {distance:.4f}\n")
-        for one_data in example_data:
+        for one_data in doctor_data:
             if one_data["name"] == meta["name"]:
                 disease_symptoms.append(f"{meta.get('name')}: {one_data['matches']}")
     disease_symptoms_text = "\n".join(disease_symptoms)
@@ -118,7 +121,7 @@ async def getTreatmentAdvice(disease_name: str, tool_context: ToolContext) -> st
     """
     #查询真实的某个疾病的治疗建议数据库，得到专业建议，这里使用大模型模拟
     print(f"Agent {tool_context.agent_name} 正在调用工具：getTreatmentAdvice，传入的疾病名称是：{disease_name}")
-    for one_data in example_data:
+    for one_data in doctor_data:
         if one_data["name"] == disease_name:
             return one_data["treatment_plan"]
     prompt = """

@@ -1,5 +1,11 @@
-# 数据准备
-[main_data_prepare.py](main_data_prepare.py)
+# 运行和测试
+## 准备数据（数据进行向量化）
+python main_data_prepare.py
+
+## 运行服务端
+python main_api.py
+
+## 前端进行测试
 
 
 # 问诊Agent，提取症状（调用工具，进行匹配）

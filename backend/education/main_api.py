@@ -39,9 +39,9 @@ logger = logging.getLogger(__name__)
 @click.option("--port", "port", default=10012, help="服务器监听的端口号（默认为 10012）")
 def main(host, port):
     """
-    启动 Outline Agent 服务，支持流式和非流式两种模式。
+    启动 Agent 服务，支持流式和非流式两种模式。
     """
-    logger.info("启动 Outline Agent 服务")
+    logger.info("启动 Agent 服务")
     streaming = os.environ.get("STREAMING") == "true"
     logger.info(f"流式模式: {streaming}")
 
@@ -56,7 +56,7 @@ def main(host, port):
         name=agent_card_name,
         description=agent_description,
         tags=["doctor"],
-        examples=["doctor"],
+        examples=["我最近感觉有些疲劳"],
     )
 
     # 构建 agent 卡片信息
