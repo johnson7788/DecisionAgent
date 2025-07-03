@@ -47,7 +47,7 @@ if __name__ == '__main__':
     print(chromadb_instance.list_collection(COLLECTION_NAME, number=len(documents_to_embed)))
 
     # 7. 进行查询测试
-    query_text = "头晕头痛，疲劳，心悸"
+    query_text = "我喜欢画画，以后想学艺术相关的专业"
     print(f"\n查询文本: '{query_text}'")
     query_results = chromadb_instance.query2collection(
         collection=COLLECTION_NAME,
