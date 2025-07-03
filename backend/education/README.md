@@ -6,7 +6,8 @@ python main_data_prepare.py
 python main_api.py
 
 ## 前端进行测试
-
+![chat1.png](chat1.png)
+![chat2.png](chat2.png)
 
 # 教育规划Agent
 1. 用户说出自己的个人情况，比如，兴趣，爱好，特长，成绩等
