@@ -45,18 +45,18 @@ def main(host, port):
     streaming = os.environ.get("STREAMING") == "true"
     logger.info(f"流式模式: {streaming}")
 
-    agent_card_name = "Education Planner Agent"
-    agent_name = "education_planner"
+    agent_card_name = "Business Consultant Agent"
+    agent_name = "business_consultant"
     # Agent描述必须清晰
-    agent_description = "Based on the user's personal situation, recommend suitable majors and provide detailed introductions."
+    agent_description = "Provides business consultation on market entry, competitive analysis, and marketing strategies."
 
     # 定义 agent 的技能
     skill = AgentSkill(
         id=agent_name,
         name=agent_card_name,
         description=agent_description,
-        tags=["education"],
-        examples=["我喜欢画画，以后学哪个专业更好？"],
+        tags=["business"],
+        examples=["I'm planning to open a coffee shop, how should I position it and create a marketing strategy?"],
     )
 
     # 构建 agent 卡片信息

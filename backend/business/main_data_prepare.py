@@ -8,13 +8,13 @@
 import os
 from dotenv import load_dotenv
 from DecisionAgent.embedding_utils import EmbeddingModel,ChromaDB
-from data import education_data
+from data import business_data
 load_dotenv()
-COLLECTION_NAME = os.environ.get("COLLECTION_NAME", "education_data")
+COLLECTION_NAME = os.environ.get("COLLECTION_NAME", "business_data")
 print(f"使用的向量表是: {COLLECTION_NAME}")
 def get_matches_for_embedding():
-    documents = [item["matches"] for item in education_data]
-    metadatas = [{"name": item["name"]} for item in education_data]
+    documents = [item["problem_description"] for item in business_data]
+    metadatas = [{"name": item["solution_name"]} for item in business_data]
     return documents, metadatas
 
 if __name__ == '__main__':
@@ -47,7 +47,7 @@ if __name__ == '__main__':
     print(chromadb_instance.list_collection(COLLECTION_NAME, number=len(documents_to_embed)))
 
     # 7. 进行查询测试
-    query_text = "我喜欢画画，以后想学艺术相关的专业"
+    query_text = "我计划开一家咖啡馆，但市场竞争激烈，我该如何定位和制定营销策略？"
     print(f"\n查询文本: '{query_text}'")
     query_results = chromadb_instance.query2collection(
         collection=COLLECTION_NAME,
