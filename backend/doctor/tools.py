@@ -13,9 +13,12 @@ from data import doctor_data
 import time
 from datetime import datetime
 import random
+from dotenv import load_dotenv
 from DecisionAgent.embedding_utils import EmbeddingModel,ChromaDB
 # import litellm
 # litellm._turn_on_debug()
+# 加载环境变量
+load_dotenv()
 
 TOOL_MODEL_API_BASE = os.environ["TOOL_MODEL_API_BASE"]
 TOOL_MODEL_API_KEY = os.environ["TOOL_MODEL_API_KEY"]
