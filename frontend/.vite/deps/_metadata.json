@@ -1,0 +1,38 @@
+{
+  "hash": "5751b7cc",
+  "browserHash": "12c32aa5",
+  "optimized": {
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "4d0747a0",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "183ca636",
+      "needsInterop": true
+    },
+    "uuid": {
+      "src": "../../node_modules/uuid/dist/esm-browser/index.js",
+      "file": "uuid.js",
+      "fileHash": "18d92191",
+      "needsInterop": false
+    },
+    "@microsoft/fetch-event-source": {
+      "src": "../../node_modules/@microsoft/fetch-event-source/lib/esm/index.js",
+      "file": "@microsoft_fetch-event-source.js",
+      "fileHash": "3a1f683b",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-ENLGS5T4": {
+      "file": "chunk-ENLGS5T4.js"
+    },
+    "chunk-76J2PTFD": {
+      "file": "chunk-76J2PTFD.js"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* --bg-color: #0f172a;
+     --acc-color: #334155;
+     --txt-color: #64748b;
+     --heading: #cbd5e1; */
+
+
+     small {
+        left: calc(50% - 50px);
+     }
