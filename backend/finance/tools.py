@@ -9,7 +9,7 @@ import os
 from litellm import completion
 from google.adk.tools import ToolContext
 from google.adk.tools.agent_tool import AgentTool
-from data import education_data
+from data import financial_data # 假设你有一个名为 financial_data 的新数据文件
 import time
 from datetime import datetime
 import random
@@ -24,7 +24,7 @@ TOOL_MODEL_API_BASE = os.environ["TOOL_MODEL_API_BASE"]
 TOOL_MODEL_API_KEY = os.environ["TOOL_MODEL_API_KEY"]
 TOOL_MODEL_NAME = os.environ["TOOL_MODEL_NAME"]
 TOOL_MODEL_PROVIDER = os.environ["TOOL_MODEL_PROVIDER"]
-COLLECTION_NAME = os.environ.get("COLLECTION_NAME", "education_data")
+COLLECTION_NAME = os.environ.get("COLLECTION_NAME", "financial_data")
 print(f"使用的向量表是: {COLLECTION_NAME}")
 embedder = EmbeddingModel()
 chromadb_instance = ChromaDB(embedder=embedder)
@@ -40,19 +40,19 @@ def query_deepseek(prompt):
     except Exception as e:
         return f"Error: {str(e)}"
 
-async def matchMajorByInfo(
+async def matchFinancialProducts(
     infos: list[str],
     tool_context: ToolContext,
 ) -> str:
     """
-    根据用户的个人情况（如兴趣、特长、期望薪资等）推荐合适的专业
+    根据用户的个人情况（如风险偏好、投资期限、资金量、投资目标等）推荐合适的金融产品
     params:
     infos：用户的个人情况描述列表
-    :return: 返回所有可能的专业建议
+    :return: 返回所有可能的金融产品建议
     """
     agent_name = tool_context.agent_name
     history_infos = tool_context.state.get("infos", [])
-    print(f"Agent {agent_name} 正在调用工具：matchMajorByInfo，传入的用户信息是：{infos}，历史信息有: {history_infos}")
+    print(f"Agent {agent_name} 正在调用工具：matchFinancialProducts，传入的用户信息是：{infos}，历史信息有: {history_infos}")
     history_infos.extend(infos)
     history_infos = list(set(history_infos))
     tool_context.state["infos"] = history_infos #更新症状
@@ -65,7 +65,7 @@ async def matchMajorByInfo(
         topk=2
     )
     print("查询结果:")
-    major_infos = []
+    product_infos = []
     for i in range(len(query_results["documents"][0])):
         doc = query_results["documents"][0][i]
         meta = query_results["metadatas"][0][i]
@@ -73,28 +73,28 @@ async def matchMajorByInfo(
         print(f"  文档: {doc[:50]}... (截断)")
         print(f"  名称: {meta.get('name')}")
         print(f"  距离: {distance:.4f}\n")
-        for one_data in education_data:
+        for one_data in financial_data:
             if one_data["name"] == meta["name"]:
-                major_infos.append(f"{meta.get('name')}: {one_data['matches']}")
-    major_infos_text = "\n".join(major_infos)
+                product_infos.append(f"{meta.get('name')}: {one_data['matches']}")
+    product_infos_text = "\n".join(product_infos)
     prompt = f"""
-你是一位专业的教育规划师，擅长根据学生的个人情况（兴趣、特长、成绩、期望等），从专业数据库中推荐最适合的专业，并判断是否需要更多信息来精确推荐。
+你是一位专业的金融投资顾问，擅长根据客户的个人情况（风险偏好、投资期限、资金量、投资目标等），从金融产品数据库中推荐最适合的金融产品，并判断是否需要更多信息来精确推荐。
 
-以下是已知专业及其特点的描述：
+以下是已知金融产品及其特点的描述：
 
 ```
-{major_infos_text}
+{product_infos_text}
 ```
 
-请根据学生提供的个人情况，分析并返回可能适合的专业名称，并按照匹配程度排序。
+请根据客户提供的个人情况，分析并返回可能适合的金融产品名称，并按照匹配程度排序。
 
 **输出要求：**
 
-* 返回**多个可能的专业名称**，并注明是否还需要其他信息以进一步确认。
-* 如果学生提供的信息足以推荐某个专业，请注明“不再需要其他信息判断”。
+* 返回**多个可能的金融产品名称**，并注明是否还需要其他信息以进一步确认。
+* 如果客户提供的信息足以推荐某个金融产品，请注明“不再需要其他信息判断”。
 * 如果还不能明确判断，请指出还需询问哪些关键信息来进一步确认。
 
-**学生描述的个人情况如下：**
+**客户描述的个人情况如下：**
 
 ```
 {history_infos}
@@ -103,48 +103,51 @@ async def matchMajorByInfo(
 **请输出如下格式：**
 
 ```
-可能的专业：
-1. 专业名称A：建议进一步了解你的【数学成绩、编程基础】，以评估是否匹配
-2. 专业名称B：根据你对艺术的兴趣，此专业匹配度很高，可以深入了解
-3. 专业名称C：建议明确你对【未来工作城市、薪资期望】，以提高推荐准确性
+可能的金融产品：
+1. 金融产品A：建议进一步了解你的【资金量、投资期限】，以评估是否匹配
+2. 金融产品B：根据你对稳健收益的偏好，此产品匹配度很高，可以深入了解
+3. 金融产品C：建议明确你对【流动性、风险承受能力】，以提高推荐准确性
 ```
 """
     result = query_deepseek(prompt)
     return result
 
-async def getMajorIntroduction(major_name: str, tool_context: ToolContext) -> str:
+async def getFinancialProductIntroduction(product_name: str, tool_context: ToolContext) -> str:
     """
-    获取某个专业的详细介绍
+    获取某个金融产品的详细介绍
     params:
-    major_name: 专业名称
+    product_name: 金融产品名称
     """
-    print(f"Agent {tool_context.agent_name} 正在调用工具：getMajorIntroduction，传入的专业名称是：{major_name}")
-    for one_data in education_data:
-        if one_data["name"] == major_name:
+    print(f"Agent {tool_context.agent_name} 正在调用工具：getFinancialProductIntroduction，传入的金融产品名称是：{product_name}")
+    for one_data in financial_data:
+        if one_data["name"] == product_name:
             return one_data["treatment_plan"]
     prompt = """
-### 🎓 Prompt：专业介绍助手
+### 💰 Prompt：金融产品介绍助手
 
-你是一位资深的教育顾问，擅长用**通俗易懂、吸引人**的语言为学生提供**详尽的专业介绍**。你能够整合最新的教育信息和行业趋势，提供全面的专业解读。
+你是一位资深的金融顾问，擅长用**通俗易懂、吸引人**的语言为客户提供**详尽的金融产品介绍**。你能够整合最新的金融信息和市场趋势，提供全面的产品解读。
 
-请根据用户提供的专业名称，输出以下内容：
+请根据用户提供的金融产品名称，输出以下内容：
 
-1. ✅ **专业简介**（核心课程、培养目标等，简明扼要）
-2. 📚 **深造方向**（考研、出国留学的相关领域）
-3. 💼 **就业前景**（主要就业行业、典型职位、薪资水平参考）
-4. 🏫 **推荐院校**（列举几所在该专业领域有优势的院校）
+1. ✅ **产品简介**（产品类型、投资范围、风险等级等，简明扼要）
+2. 📈 **收益特点**（预期收益、收益计算方式、历史表现等）
+3. 🔒 **风险提示**（主要风险、风险控制措施等）
+4. 📊 **适合人群**（适合的风险偏好、投资期限、资金量等）
 
-请确保回答内容结构清晰、信息丰富，能激发学生的兴趣。如果该专业有特殊的报考要求（如美术加试、身体条件限制），请一并注明。
+请确保回答内容结构清晰、信息丰富，能激发客户的兴趣。如果该产品有特殊的购买要求（如起投金额、购买渠道），请一并注明。
 
 """
-    prompt += f"###  major_name: {major_name}"
+    prompt += f"###  product_name: {product_name}"
     response = query_deepseek(prompt)
     return response
 
 
 if __name__ == '__main__':
-    result = matchMajorByInfo(infos=['我喜欢画画，以后想学艺术相关的专业'])
-    print(result)
+    # 假设 financial_data 已经定义
+    # from data import financial_data
+    # result = matchFinancialProducts(infos=['我希望投资风险较低，收益稳健的产品'])
+    # print(result)
 
-    result = getMajorIntroduction(major_name='绘画')
-    print(result)
+    # result = getFinancialProductIntroduction(product_name='货币基金')
+    # print(result)
+    pass
