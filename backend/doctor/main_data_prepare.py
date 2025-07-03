@@ -5,11 +5,11 @@
 # @Author: johnson
 # @Contact : github: johnson7788
 # @Desc  : 准备数据，数据进行向量化
-from embedding_utils import EmbeddingModel,ChromaDB
-from data import example_data
+from DecisionAgent.embedding_utils import EmbeddingModel,ChromaDB
+from data import doctor_data
 def get_matches_for_embedding():
-    documents = [item["matches"] for item in example_data]
-    metadatas = [{"name": item["name"]} for item in example_data]
+    documents = [item["matches"] for item in doctor_data]
+    metadatas = [{"name": item["name"]} for item in doctor_data]
     return documents, metadatas
 
 if __name__ == '__main__':

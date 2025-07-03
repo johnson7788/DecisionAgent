@@ -1,11 +1,13 @@
-# 谷歌Gemini模型
 GOOGLE_API_KEY=xxx
-DEEPSEEK_API_KEY=xxx
-# ALI_API_KEY相当于DASHSCOPE_API_KEY
+DEEPSEEK_API_KEY=sk-xxx
 ALI_API_KEY=sk-xxx
-OPENAI_API_KEY=xxx
-CLAUDE_API_KEY=xxx
-# 使用LLM的流式的输出
+OPENAI_API_KEY=sk-xxx
+CLAUDE_API_KEY=skxxx
+# 流式的输出结果
 STREAMING=true
-MODEL_PROVIDER=google
-LLM_MODEL=gemini-2.0-flash
+MODEL_PROVIDER=openai
+LLM_MODEL=gpt-4.1
+TOOL_MODEL_API_BASE=https://api.deepseek.com/v1
+TOOL_MODEL_API_KEY=sk-xxx
+TOOL_MODEL_NAME=deepseek-chat
+TOOL_MODEL_PROVIDER=deepseek
