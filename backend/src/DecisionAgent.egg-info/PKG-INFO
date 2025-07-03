@@ -1,0 +1,19 @@
+Metadata-Version: 2.4
+Name: DecisionAgent
+Version: 1.0.0
+Summary: A2A and MCP
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: fastmcp
+Requires-Dist: requests
+Requires-Dist: dotenv
+Requires-Dist: a2a-sdk==0.2.10
+Requires-Dist: mcp
+Requires-Dist: litellm
+Requires-Dist: python-dotenv
+Requires-Dist: fastmcp
+Requires-Dist: openai
+Requires-Dist: asyncclick
+Requires-Dist: chromadb
+Requires-Dist: google-adk
+Requires-Dist: google-genai

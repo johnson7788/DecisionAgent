@@ -1,0 +1,11 @@
+# 谷歌Gemini模型
+GOOGLE_API_KEY=xxx
+DEEPSEEK_API_KEY=xxx
+# ALI_API_KEY相当于DASHSCOPE_API_KEY
+ALI_API_KEY=sk-xxx
+OPENAI_API_KEY=xxx
+CLAUDE_API_KEY=xxx
+# 使用LLM的流式的输出
+STREAMING=true
+MODEL_PROVIDER=google
+LLM_MODEL=gemini-2.0-flash

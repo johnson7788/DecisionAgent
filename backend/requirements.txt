@@ -1,0 +1,11 @@
+google-genai==1.19.0
+google-adk>=1.0.0,<2.0.0
+httpx
+a2a-sdk==0.2.10
+litellm
+python-dotenv
+fastmcp==2.2.5
+asyncclick
+pytest
+chromadb
+openai

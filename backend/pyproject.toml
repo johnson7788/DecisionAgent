@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "DecisionAgent"
+version = "1.0.0"
+description = "A2A and MCP"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastmcp",
+    "requests",
+    "dotenv",
+    "a2a-sdk==0.2.10",
+    "mcp",
+    "litellm",
+    "python-dotenv",
+    "fastmcp",
+    "openai",
+    "asyncclick",
+    "chromadb",
+    "google-adk",
+    "google-genai",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
