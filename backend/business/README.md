@@ -7,7 +7,6 @@ python main_api.py
 
 ## 前端进行测试
 ![chat1.png](chat1.png)
-![chat2.png](chat2.png)
 
 # 商业咨询Agent
 1. 用户描述他们遇到的商业问题，例如市场进入策略、竞争分析、营销计划、运营效率等。

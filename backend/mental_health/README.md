@@ -6,8 +6,7 @@ python main_data_prepare.py
 python main_api.py
 
 ## 前端进行测试
-![chat1.png](chat1.png)
-![chat2.png](chat2.png)
+
 
 # 心理健康咨询Agent
 1. 用户描述自己的心理困扰或情绪问题。

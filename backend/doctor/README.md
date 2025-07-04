@@ -6,7 +6,10 @@ python main_data_prepare.py
 python main_api.py
 
 ## 前端进行测试
-
+![chat1.png](chat1.png)
+![chat2.png](chat2.png)
+![chat3.png](chat3.png)
+![chat4.png](chat4.png)
 
 # 问诊Agent，提取症状（调用工具，进行匹配）
 1. 用户询问，说出症状

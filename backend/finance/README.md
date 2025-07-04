@@ -8,8 +8,7 @@ python main_data_prepare.py
 python main_api.py
 
 ## 前端进行测试
-![chat1.png](chat1.png)
-![chat2.png](chat2.png)
+
 
 # 金融投资Agent
 1. 用户说出自己的个人情况，比如，风险偏好，投资期限，资金量，投资目标等
