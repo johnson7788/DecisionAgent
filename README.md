@@ -17,6 +17,21 @@ python main_data_prepare.py
 python main_api.py
 ```
 
+
+## 截图
+商业咨询
+![chat1.png](backend/business/chat1.png)
+
+客户服务
+![chat1.png](backend/customer_service/chat1.png)
+![chat2.png](backend/customer_service/chat2.png)
+![chat3.png](backend/customer_service/chat3.png)
+![chat4.png](backend/customer_service/chat4.png)
+
+教育咨询
+![chat1.png](backend/education/chat1.png)
+![chat2.png](backend/education/chat2.png)
+
 ## 数据
 
 **决策型 Agent 场景的模拟数据（结构与疾病场景一致）**，每条数据包括 `name`（名称）、`matches`（匹配条件/特征描述）、`treatment_plan`（应对策略或处理方案）：
@@ -37,6 +52,15 @@ python main_api.py
 | 危机应对   | `crisis_data`           |
 | 智能客服   | `customer_service_data` |
 | 疾病诊断   | `example_data`          |
+
+## Readme
+[README.md](backend/business/README.md)
+[README.md](backend/customer_service/README.md)
+[README.md](backend/doctor/README.md)
+[README.md](backend/education/README.md)
+[README.md](backend/finance/README.md)
+[README.md](backend/law/README.md)
+[README.md](backend/mental_health/README.md)
 
 
 下面是每个**辅助决策型 Agent 场景**的流程图。
@@ -208,3 +232,4 @@ flowchart TD
 
     F --> I[输出客服响应并结束]
 ```
+
