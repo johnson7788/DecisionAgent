@@ -1,5 +1,6 @@
 GOOGLE_API_KEY=xxx
 DEEPSEEK_API_KEY=sk-xxx
+# 嵌入模型，使用的阿里
 ALI_API_KEY=sk-xxx
 OPENAI_API_KEY=sk-xxx
 CLAUDE_API_KEY=skxxx

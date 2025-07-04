@@ -13,24 +13,27 @@ npm run dev
 cd backend
 pip install -e .
 cd doctor
+cp env_template .env
 python main_data_prepare.py
 python main_api.py
 ```
-
-
-## 截图
-商业咨询
-![chat1.png](backend/business/chat1.png)
-
-客户服务
-![chat1.png](backend/customer_service/chat1.png)
-![chat2.png](backend/customer_service/chat2.png)
-![chat3.png](backend/customer_service/chat3.png)
-![chat4.png](backend/customer_service/chat4.png)
-
-教育咨询
-![chat1.png](backend/education/chat1.png)
-![chat2.png](backend/education/chat2.png)
+## .env讲解
+GOOGLE_API_KEY=xxx
+DEEPSEEK_API_KEY=sk-xxx
+#工具中使用的嵌入模型的key是ALI_API_KEY的，可以自行更改
+ALI_API_KEY=sk-xxx
+OPENAI_API_KEY=sk-xxx
+CLAUDE_API_KEY=skxxx
+# 流式的输出结果
+STREAMING=true
+# 默认使用的模型
+MODEL_PROVIDER=openai
+LLM_MODEL=gpt-4.1
+# 工具中使用的模型，向量模型粗筛，LLM模型细筛
+TOOL_MODEL_API_BASE=https://api.deepseek.com/v1
+TOOL_MODEL_API_KEY=sk-xxx
+TOOL_MODEL_NAME=deepseek-chat
+TOOL_MODEL_PROVIDER=deepseek
 
 ## 数据
 
@@ -52,15 +55,6 @@ python main_api.py
 | 危机应对   | `crisis_data`           |
 | 智能客服   | `customer_service_data` |
 | 疾病诊断   | `example_data`          |
-
-## Readme
-[README.md](backend/business/README.md)
-[README.md](backend/customer_service/README.md)
-[README.md](backend/doctor/README.md)
-[README.md](backend/education/README.md)
-[README.md](backend/finance/README.md)
-[README.md](backend/law/README.md)
-[README.md](backend/mental_health/README.md)
 
 
 下面是每个**辅助决策型 Agent 场景**的流程图。
@@ -232,4 +226,3 @@ flowchart TD
 
     F --> I[输出客服响应并结束]
 ```
-
