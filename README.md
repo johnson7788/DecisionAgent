@@ -18,6 +18,7 @@ python main_data_prepare.py
 python main_api.py
 ```
 ## .env讲解
+```
 GOOGLE_API_KEY=xxx
 DEEPSEEK_API_KEY=sk-xxx
 #工具中使用的嵌入模型的key是ALI_API_KEY的，可以自行更改
@@ -34,6 +35,7 @@ TOOL_MODEL_API_BASE=https://api.deepseek.com/v1
 TOOL_MODEL_API_KEY=sk-xxx
 TOOL_MODEL_NAME=deepseek-chat
 TOOL_MODEL_PROVIDER=deepseek
+```
 
 ## 数据
 
