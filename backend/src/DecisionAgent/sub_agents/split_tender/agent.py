@@ -21,15 +21,13 @@ def my_before_model_callback(callback_context: CallbackContext, llm_request: Llm
     # 1. 检查用户输入
     start_time = time.time()
     callback_context.state["start_time"] = start_time
-
-    user_input = callback_context.user_content.parts[0].text
-    callback_context.state["outline"] = user_input
-    print("调用了SplitTopicAgent的Outline的callback，存储outline信息")
-    logger.info("调用了SplitTopicAgent的Outline的callback，存储outline信息")
-    #为啥需要手动加入user_input?
-    llm_request.contents.append(
-        types.Content(role="user", parts=[types.Part(text=user_input)])
-    )
+    # 读取招标文件内容
+    tender_content = callback_context.state.get("tender_content")
+    print(f"读取招标文件内容成功")
+    # #放到对话框里
+    # llm_request.contents.append(
+    #     types.Content(role="user", parts=[types.Part(text=tender_content)])
+    # )
     # 返回 None，继续调用 LLM
     return None
 
@@ -40,12 +38,12 @@ def my_after_model_callback(callback_context: CallbackContext, llm_response: Llm
     logger.warning(f"调用了{agent_name}模型后的callback, 耗时: {cost_time} 秒")
     return None
 
-split_tendor_agent = Agent(
-    name="split_tendor",
+split_tender_agent = Agent(
+    name="split_tender",
     model=create_model(model=SPLIT_TENDER_AGENT_CONFIG["model"], provider=SPLIT_TENDER_AGENT_CONFIG["provider"]),
-    description="切分招标书",
+    description="切分招标书,生成Json格式",
     instruction=prompt.SPLIT_TENDER_AGENT_PROMPT,
-    output_key="split_tendor",
+    output_key="split_tender",  #保存切分结果到split_tender里面，是state里面
     before_model_callback=my_before_model_callback,
     after_model_callback=my_after_model_callback
 )
