@@ -20,7 +20,6 @@ from google.adk.agents.parallel_agent import (
 )
 
 # from .load_mcp import load_mcp_tools
-from .audit_agent.agent import DynamicParallelAuditOneAgent
 from ...config import AUDIT_AGENT_CONFIG
 from ...create_model import create_model
 from . import prompt
@@ -34,8 +33,23 @@ file_handler = logging.FileHandler(module_log_file, encoding="utf-8")
 file_handler.setLevel(logging.WARNING)
 logger.addHandler(file_handler)
 
+# 审计Agent
+audit_model = create_model(model=AUDIT_AGENT_CONFIG["model"],
+                              provider=AUDIT_AGENT_CONFIG["provider"])
+
+def audit_agent_before_model_callback(callback_context: CallbackContext, llm_request: LlmRequest) -> Optional[LlmResponse]:
+    # 1. 检查用户输入
+    agent_name = callback_context.agent_name
+    history_length = len(llm_request.contents)
+    print(f"调用了{agent_name} research Agent的callback, 现在Agent共有{history_length}条历史记录")
+    #清空contents,不需要上一步的拆分topic的记录, 不能在这里清理，否则，每次调用工具都会清除记忆，白操作了
+    # llm_request.contents.clear()
+    # 返回 None，继续调用 LLM
+    return None
+
+
 # 自定义我们的动态并行 Agent
-class DynamicParallelSearchAgent(ParallelAgent):
+class DynamicParallelAuditOneAgent(ParallelAgent):
     """
     一个可以根据输入动态创建和并行执行子Agent的Agent。
     它期望从上一个Agent接收一个JSON字符串，其中包含一个'topics'列表。
@@ -59,34 +73,16 @@ class DynamicParallelSearchAgent(ParallelAgent):
         """
         重写核心运行逻辑，以实现动态并行化。
         """
-        # 1. 从上下文中获取上一个Agent的输出
-        # 读取招标书的切片
-        split_tendor = ctx.session.state.get("split_tendor", {})
-        logger.info(f"DynamicParallelSearchAgent 收到输入: {split_tendor}")
-        split_tendor_list = []
-        try:
-            # 清理可能的Markdown代码块
-            if isinstance(split_tendor, str):
-                if split_tendor.strip().startswith("```json"):
-                    split_tendor = split_tendor.strip()[7:-3]
-                elif split_tendor.strip().startswith("```"):
-                    split_tendor = split_tendor.strip()[3:-3]
-
-            split_tendor_list = json.loads(split_tendor)
-        except (json.JSONDecodeError, AttributeError) as e:
-            yield Event(
-                author=self.name,
-                content=types.Content(parts=[types.Part(text=f"错误：解析主题JSON失败 - {e}")]),
-                actions=EventActions(escalate=True)
-            )
-            return
+        # 1. 获取切分的投标书
+        split_bid = ctx.session.state.get("split_bid", {})
+        logger.info(f"DynamicParallelAuditOneAgent 收到输入: {split_tendor}")
 
         # 3. 为每个主题动态创建子Agent
         dynamic_sub_agents = []
         # 每个子Agent的输出key的集合，最终存储到state中
-        audit_output_keys = []
-        for idx, topic in enumerate(split_tendor_list):
-            topic_id = topic.get("requirements", "N/A")  # 一些要求
+        one_audit_output_keys = []
+        for idx, bid_block in enumerate(split_bid):
+            print(bid_block)  # 打印切分后的投标书的一块内容
 
             # 创建一个定制化的指令，将主题信息注入到基础prompt中
             custom_instruction = (
@@ -97,16 +93,19 @@ class DynamicParallelSearchAgent(ParallelAgent):
                 f"- **Keywords**: {topic.get('keywords', [])}\n"
                 f"- **Research Focus**: {topic.get('research_focus', '')}"
             )
-            new_audit_agent = DynamicParallelAuditOneAgent(
-                name=f"audiot_agent_{topic_id}",  # 模板名称
-                description="单独的1个审计Agent",
+            new_audit_agent = Agent(
+                model=audit_model,
+                name=f"one_audit_agent_{topic_id}",  # 模板名称
+                description="单独的1个审计Agent，审计某一块投标内容",
                 instruction=custom_instruction,
+                output_key=f"one_audit_agent_{idx}",  #输出的内容的key
+                before_model_callback=audit_agent_before_model_callback
             )
-            audit_output_keys.append(f"audit_agent_{topic_id}")
+            one_audit_output_keys.append(f"one_audit_agent_{topic_id}")
             # 关键：设置父级Agent，ADK框架需要这个来构建Agent树
             new_audit_agent.parent_agent = self
             dynamic_sub_agents.append(new_audit_agent)
-        ctx.session.state["audit_output_keys"] = audit_output_keys
+        ctx.session.state["one_audit_output_keys"] = one_audit_output_keys
         logger.info(f"成功创建了 {len(dynamic_sub_agents)} 个动态 audit agents.")
 
         # 4. 并行运行所有动态创建的Agent
@@ -126,10 +125,3 @@ class DynamicParallelSearchAgent(ParallelAgent):
         print(f"所有动态 Audit Agent 运行完毕")
         cost_time = time.time() - start_time
         logger.warning(f"所有 Audit Agent 的总耗时为: {cost_time} 秒")
-
-
-# 实例化我们的新 Agent
-audit_parallel_agent = DynamicParallelSearchAgent(
-    name="audit_parallel_agent",
-    description="根据拆分的审计要求，对投标书进行审计",
-)
