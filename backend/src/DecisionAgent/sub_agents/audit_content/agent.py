@@ -61,18 +61,18 @@ class DynamicParallelSearchAgent(ParallelAgent):
         """
         # 1. 从上下文中获取上一个Agent的输出
         # 读取招标书的切片
-        split_tendor = ctx.session.state.get("split_tendor", {})
-        logger.info(f"DynamicParallelSearchAgent 收到输入: {split_tendor}")
-        split_tendor_list = []
+        split_tender = ctx.session.state.get("split_tender", {})
+        logger.info(f"DynamicParallelSearchAgent 收到输入: {split_tender}")
+        split_tender_list = []
         try:
             # 清理可能的Markdown代码块
-            if isinstance(split_tendor, str):
-                if split_tendor.strip().startswith("```json"):
-                    split_tendor = split_tendor.strip()[7:-3]
-                elif split_tendor.strip().startswith("```"):
-                    split_tendor = split_tendor.strip()[3:-3]
+            if isinstance(split_tender, str):
+                if split_tender.strip().startswith("```json"):
+                    split_tender = split_tender.strip()[7:-3]
+                elif split_tender.strip().startswith("```"):
+                    split_tender = split_tender.strip()[3:-3]
 
-            split_tendor_list = json.loads(split_tendor)
+            split_tender_list = json.loads(split_tender)
         except (json.JSONDecodeError, AttributeError) as e:
             yield Event(
                 author=self.name,
@@ -85,7 +85,7 @@ class DynamicParallelSearchAgent(ParallelAgent):
         dynamic_sub_agents = []
         # 每个子Agent的输出key的集合，最终存储到state中
         audit_output_keys = []
-        for idx, topic in enumerate(split_tendor_list):
+        for idx, topic in enumerate(split_tender_list):
             topic_id = topic.get("requirements", "N/A")  # 一些要求
 
             # 创建一个定制化的指令，将主题信息注入到基础prompt中
@@ -98,7 +98,7 @@ class DynamicParallelSearchAgent(ParallelAgent):
                 f"- **Research Focus**: {topic.get('research_focus', '')}"
             )
             new_audit_agent = DynamicParallelAuditOneAgent(
-                name=f"audiot_agent_{topic_id}",  # 模板名称
+                name=f"audit_agent_{topic_id}",  # 模板名称
                 description="单独的1个审计Agent",
                 instruction=custom_instruction,
             )
