@@ -124,4 +124,4 @@ class DynamicParallelAuditOneAgent(ParallelAgent):
             yield event
         print(f"所有动态 Audit Agent 运行完毕")
         cost_time = time.time() - start_time
-        logger.warning(f"所有 Audit Agent 的总耗时为: {cost_time} 秒")
+        logger.warning(f"所有 单个 Audit Agent 的总耗时为: {cost_time} 秒")
