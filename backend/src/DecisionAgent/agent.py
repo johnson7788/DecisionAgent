@@ -7,6 +7,8 @@ from google.adk.tools import BaseTool
 from google.adk.tools.tool_context import ToolContext
 from sub_agents.split_tender.agent import split_tendor_agent
 from sub_agents.split_bid.agent import split_bid_agent
+from sub_agents.audit_content.agent import audit_parallel_agent
+from sub_agents.summary_writer.agent import summary_writer_agent
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -41,7 +43,8 @@ root_agent = SequentialAgent(
     sub_agents=[
         split_tendor_agent,
         split_bid_agent,
-        ppt_generator_loop_agent,
+        audit_parallel_agent,
+        summary_writer_agent,
     ],
     before_agent_callback=before_agent_callback,
 )

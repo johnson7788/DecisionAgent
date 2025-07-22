@@ -24,7 +24,7 @@ def my_before_model_callback(callback_context: CallbackContext, llm_request: Llm
 summary_writer_agent = Agent(
     model=create_model(model=SUMMARY_AGENT_CONFIG["model"], provider=SUMMARY_AGENT_CONFIG["provider"]),
     name="SummaryAgent",
-    description="Professional medical article writer and content integration specialist in the medical field.",
+    description="读取审计结果，并汇总",
     instruction=prompt.SUMMARY_AGENT_PROMPT,
     before_model_callback=my_before_model_callback,
     output_key="summary_document",
