@@ -1,33 +1,25 @@
-# 数据准备
-[main_data_prepare.py](main_data_prepare.py)
-
-
-# 问诊Agent，提取症状（调用工具，进行匹配）
-1. 用户询问，说出症状
-2. 提取症状，匹配可能的疾病，可能有多个或者唯一。 （当前提取症状和历史的症状都进行累加到匹配条件中）
-3. 如果是唯一，那么查询疾病的治疗建议。
-4. 如果不唯一，那么从几个可能的疾病中询问用户是否还有其它症状。（其它症状来自于其它几个可能的疾病表现）
+# 审计Agent
+# 1. 切分招标书
+# 2. 切分投标文件
+# 3. 每个招标需求，对应投标文件进行检查
 
 ```mermaid
 flowchart TD
-    A[用户输入症状] --> B[提取当前症状]
-    B --> C[累加历史症状]
-    C --> D[匹配可能疾病]
+    A[Agent1: coordinator_agent<br/>协调Agent] --> B[split_tendor_agent<br/>切分招标书]
+    B --> C[split_bid_agent<br/>切分投标文件]
+    C --> D[提取投标内容片段<br/>作为审计要求]
+    D --> E{audit_parallel_agent<br/>并发审计各部分}
 
-    D --> E{是否唯一匹配}
-    
-    E -- 是唯一 --> F[查询疾病治疗建议]
-    
-    E -- 多个可能 --> G[提取其它相关症状]
-    G --> H[询问用户是否有这些症状]
-    H --> B
+    subgraph AuditAgents
+        direction LR
+        E --> F1[one_audit_agent_1<br/>审计投标片段1]
+        E --> F2[one_audit_agent_2<br/>审计投标片段2]
+        E --> F3[one_audit_agent_3<br/>审计投标片段3]
+        E --> F4[...]
+    end
 
-    F --> I[输出治疗建议并结束]
+    AuditAgents --> G[summary_writer_agent<br/>汇总所有审计结果]
+
+    G --> H[输出最终审计总结]
+
 ```
-
-![flow.png](../doc/flow.png)
-
-# 示例问题：
-我最近感觉有些疲劳。
-疲劳感持续一周了，体重变轻了
-有的
