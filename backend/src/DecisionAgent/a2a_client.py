@@ -20,7 +20,7 @@ async def httpx_client():
                 'role': 'user',
                 'parts': [{'type': 'text', 'text': prompt}],
                 'messageId': request_id,
-                'metadata': {"user_data": "hello"}
+                'metadata': {"tender_file": "/xxx/tendor.file", "bid_file": "/xxx/bid.file"}
             }
         }
         # 流式请求的示例
