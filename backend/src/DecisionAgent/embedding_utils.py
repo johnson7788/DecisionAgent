@@ -131,12 +131,14 @@ class ChromaDB(object):
         vectors_result = self.embedder.do_embedding(documents)
         vectors = vectors_result["data"]
         embeddings = [one["embedding"] for one in vectors]
-        col.add(
+        add_kwargs = dict(
             embeddings=embeddings,
             documents=documents,
-            metadatas=meta,
             ids=[str(i) for i in range(len(documents))]
         )
+        if meta:
+            add_kwargs["metadatas"] = meta
+        col.add(**add_kwargs)
         return "success"
 
     def query2collection(self, collection, query_documents, keyword="", topk=3):
@@ -223,7 +225,7 @@ class EmbeddingModel(object):
             dimensions=1024,  # 指定向量维度（仅 text-embedding-v3及 text-embedding-v4支持该参数）
             encoding_format="float"
         )
-        result = completion.dict()
+        result = completion.model_dump()
         print(f"text {texts} embedding result => {result}")
         return result
 
@@ -237,9 +239,10 @@ if __name__ == '__main__':
     number = 3
     print(chromadb_instance.list_collection(collection, number))
     query_documents = ["hello", "world"]
-    keyword = ["yes"]
+    keyword = "yes"
     result = chromadb_instance.query2collection(collection, query_documents, keyword=keyword,topk=3)
     documents = ["hello", "world"]
     result = chromadb_instance.insert2collection(collection, documents, meta=[])
-
+    print(result)
     result = chromadb_instance.delete_one_collection(collection)
+    print(result)
